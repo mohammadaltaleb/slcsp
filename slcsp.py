@@ -9,6 +9,23 @@ This scripts finds the slcsp for a given set of Zip Codes
 
 import csv
 
+from argparse import ArgumentParser
+
+
+def read_argument():
+    """
+    reads the zip codes passed to the script
+
+    Returns:
+        the passed zip codes as a list or None in no argument was passed
+    """
+    parser = ArgumentParser()
+    parser.add_argument('zipcodes', nargs='?')
+    args = parser.parse_args()
+    if(args.zipcodes):
+        return args.zipcodes.split(',')
+    return None
+
 
 def get_rate_area_rates(file_path):
     """
@@ -111,7 +128,7 @@ def find_and_print_slcsp(rate_area_rates, zip_rate_areas, slcsp_zip_codes):
     print('zipcode,rate')
     for code in slcsp_zip_codes:
         slcsp = ''
-        if len(zip_rate_areas[code]) == 1:
+        if code in zip_rate_areas and len(zip_rate_areas[code]) == 1:
             rate_area = zip_rate_areas[code].pop()
             if rate_area in rate_area_rates:
                 rates = rate_area_rates[rate_area]
@@ -120,12 +137,14 @@ def find_and_print_slcsp(rate_area_rates, zip_rate_areas, slcsp_zip_codes):
         print(f'{code},{slcsp}')
 
 
-def main():
+def main(slcsp_zip_codes):
     rate_area_rates = get_rate_area_rates('plans.csv')
     zip_rate_areas = get_zip_rate_areas('zips.csv')
-    slcsp_zip_codes = read_slcsp_zip_codes('slcsp.csv')
+    if not slcsp_zip_codes:
+        slcsp_zip_codes = read_slcsp_zip_codes('slcsp.csv')
     find_and_print_slcsp(rate_area_rates, zip_rate_areas, slcsp_zip_codes)
 
 
 if __name__ == '__main__':
-    main()
+    zipcodes = read_argument()
+    main(zipcodes)
