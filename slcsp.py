@@ -108,13 +108,15 @@ def find_and_print_slcsp(rate_area_rates, zip_rate_areas, slcsp_zip_codes):
         zip_rate_areas: a dictionary mapping zip codes into rate area sets
         slcsp_zip_codes: a list of zip codes to find their slcsp
     """
+    print('zipcode,rate')
     for code in slcsp_zip_codes:
         slcsp = ''
         if len(zip_rate_areas[code]) == 1:
             rate_area = zip_rate_areas[code].pop()
             if rate_area in rate_area_rates:
-                if len(rate_area_rates[rate_area]) > 1:
-                    slcsp = get_second_smallest(rate_area_rates[rate_area])
+                rates = rate_area_rates[rate_area]
+                if len(rates) > 1:
+                    slcsp = f'{get_second_smallest(rates):.2f}'
         print(f'{code},{slcsp}')
 
 
