@@ -80,7 +80,26 @@ def read_slcsp_zip_codes(file_path):
     return zip_codes
 
 
-def find_slcsp(rate_area_rates, zip_rate_areas, slcsp_zip_codes):
+def get_second_smallest(values):
+    """
+    This function returns the second lowest value in a list of numbers
+
+    Args:
+        values: a list of floats
+    
+    Returns:
+        the second lowst number in values
+    """
+    smallest, second_smallest = float('inf'), float('inf')
+    for value in values:
+        if value <= smallest:
+            smallest, second_smallest = value, smallest
+        elif value < second_smallest:
+            second_smallest = value
+    return second_smallest
+
+
+def find_and_print_slcsp(rate_area_rates, zip_rate_areas, slcsp_zip_codes):
     """
     This function finds and prints the slcsp for each zip code in a list
 
@@ -94,9 +113,8 @@ def find_slcsp(rate_area_rates, zip_rate_areas, slcsp_zip_codes):
         if len(zip_rate_areas[code]) == 1:
             rate_area = zip_rate_areas[code].pop()
             if rate_area in rate_area_rates:
-                rates = sorted(rate_area_rates[rate_area])
-                if len(rates) > 1:
-                    slcsp = rates[1]
+                if len(rate_area_rates[rate_area]) > 1:
+                    slcsp = get_second_smallest(rate_area_rates[rate_area])
         print(f'{code},{slcsp}')
 
 
@@ -104,7 +122,7 @@ def main():
     rate_area_rates = get_rate_area_rates('plans.csv')
     zip_rate_areas = get_zip_rate_areas('zips.csv')
     slcsp_zip_codes = read_slcsp_zip_codes('slcsp.csv')
-    find_slcsp(rate_area_rates, zip_rate_areas, slcsp_zip_codes)
+    find_and_print_slcsp(rate_area_rates, zip_rate_areas, slcsp_zip_codes)
 
 
 if __name__ == '__main__':
